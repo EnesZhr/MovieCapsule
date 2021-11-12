@@ -5,22 +5,25 @@
 
 <h1>Movies</h1>
 
-<form>
-    <div class="row align-items-center">
+<div class="row align-items-center mb-3">
+    <form class="row col-auto">
         <div class="col-auto">
-            <select name="genre" asp-for="SelectedGenreId" asp-items="Model.Genres" class="form-control" >
-                <option value="">Tümü</option>
+            <select name="genre" asp-for="SelectedGenreId" asp-items="Model.Genres" class="form-control">
+                <option value="">All</option>
             </select>
         </div>
         <div class="col-auto">
-            <button class="btn btn-primary">Listele</button>
+            <button class="btn btn-primary">List</button>
         </div>
-    </div>
-</form>
+    </form>
+    <form class="col-auto ml-auto">
+        <input type="text" name="q" asp-for="SearchCriteria" placeholder="Search" class="form-control" />
+    </form>
+</div>
 
 
 
-<table class="table table-striped mt-3">
+<table id="tblMovies" class="table table-striped table-bordered mt-3">
     <thead>
         <tr>
             <th>Id</th>
@@ -38,8 +41,17 @@
                 <td>@movie.Title</td>
                 <td>@movie.Year</td>
                 <td>@movie.Rating</td>
-                <td>@string.Join("," , movie.Genres.Select(x => x.Name))</td>
+                <td>@string.Join(",", movie.Genres.Select(x => x.Name))</td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $("#tblMovies").DataTable({
+            "searching": false,
+            "lengthChange": false
+        });
+    </script>
+}

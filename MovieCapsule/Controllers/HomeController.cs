@@ -22,13 +22,20 @@ namespace MovieCapsule.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index(int? genre)
+        public IActionResult Index(int? genre , string q)
         {
             var vm = new HomeViewModel()
             {
                 Genres = _db.Genres.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList(),
-                Movies = _db.Movies.Include(x => x.Genres).Where(x => !genre.HasValue  || x.Genres.Any(g => g.Id == genre)).ToList(),
-                SelectedGenreId = genre
+                Movies = _db.Movies
+                .Include(x => x.Genres)
+                .Where(x => (!genre.HasValue || x.Genres.Any(g => g.Id == genre))
+                && (q ==null || x.Title.Contains(q) || x.Year.ToString().Equals(q)
+                || x.Rating.ToString().Equals(q) 
+                || x.Rating.ToString().Replace("." , ",").Equals(q)))
+                .ToList(),
+                SelectedGenreId = genre,
+                SearchCriteria = q
             };
             return View(vm);
         }
